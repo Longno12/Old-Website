@@ -4,17 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>So Long, pillowtalk.top! | We've Moved</title>
-    
-    <!-- Google Fonts: Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
-        /* --- General Setup --- */
         :root {
             --primary-color: #007BFF;
             --primary-hover: #0056b3;
@@ -43,7 +38,6 @@
             overflow: hidden;
         }
         
-        /* --- Animated Background --- */
         .background-gradient {
             position: absolute;
             top: 0; left: 0;
@@ -60,7 +54,6 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* --- Main Content Card --- */
         .container {
             position: relative;
             z-index: 1;
@@ -109,7 +102,6 @@
             color: var(--warning-color);
         }
         
-        /* --- New Address Button --- */
         .new-address-container {
             background: #f0f4f8;
             border-radius: 12px;
@@ -140,7 +132,6 @@
             box-shadow: 0 8px 25px rgba(0, 123, 255, 0.5);
         }
 
-        /* --- Redirect Timer --- */
         .redirect-timer {
             margin-top: 2.5rem;
             padding-top: 2rem;
@@ -168,7 +159,6 @@
             transition: width 1s linear;
         }
         
-        /* --- Responsive Design --- */
         @media (max-width: 768px) {
             body { padding: 1rem; }
             .container { padding: 2rem; }
@@ -214,27 +204,20 @@
     <script>
         const NEW_DOMAIN_URL = "https://www.longno.co.uk";
         const REDIRECT_SECONDS = 15;
-
         const countdownText = document.getElementById('countdown-text');
-        const progressBarInner = document.getElementById('progress-bar-inner');
-        
+        const progressBarInner = document.getElementById('progress-bar-inner');    
         let secondsLeft = REDIRECT_SECONDS;
-
         function updateCountdown() {
             countdownText.textContent = `You will be automatically redirected in ${secondsLeft} second${secondsLeft === 1 ? '' : 's'}...`;
-
             const progressPercentage = ((REDIRECT_SECONDS - secondsLeft) / REDIRECT_SECONDS) * 100;
             progressBarInner.style.width = `${progressPercentage}%`;
-
             secondsLeft--;
-
             if (secondsLeft < 0) {
                 clearInterval(countdownInterval);
                 countdownText.textContent = "Redirecting now...";
                 window.location.href = NEW_DOMAIN_URL;
             }
         }
-
         updateCountdown(); 
         const countdownInterval = setInterval(updateCountdown, 1000);
     </script>
