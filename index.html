@@ -3,223 +3,418 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>So Long, pillowtalk.top! | We've Moved</title>
+    <title>Domain Migration | pillowtalk.top → longno.co.uk</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
         :root {
-            --primary-color: #007BFF;
-            --primary-hover: #0056b3;
-            --warning-color: #c0392b;
-            --dark-bg: #121828;
-            --light-card: rgba(255, 255, 255, 0.95);
-            --text-dark: #2c3e50;
-            --text-light: #7f8c8d;
+            --primary-900: #0a0a0b;
+            --primary-800: #1a1a1d;
+            --primary-700: #2c2c31;
+            --accent-400: #6366f1;
+            --accent-500: #8b5cf6;
+            --success-400: #10b981;
+            --warning-400: #f59e0b;
+            --warning-500: #d97706;
+            --surface-glass: rgba(255, 255, 255, 0.03);
+            --surface-glass-strong: rgba(255, 255, 255, 0.08);
+            --border-glass: rgba(255, 255, 255, 0.1);
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-tertiary: #71717a;
         }
 
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            color: var(--text-dark);
-            background-color: var(--dark-bg);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--primary-900);
+            color: var(--text-primary);
             min-height: 100vh;
-            padding: 2rem;
-            overflow: hidden;
-        }
-        
-        .background-gradient {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 0;
-            background: linear-gradient(45deg, #2c3e50, #bdc3c7, #2c3e50, #bdc3c7);
-            background-size: 400% 400%;
-            animation: gradient-animation 25s ease infinite;
+            overflow-x: hidden;
+            position: relative;
         }
 
-        @keyframes gradient-animation {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        .mesh-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+            background:
+                radial-gradient(at 20% 80%, hsla(212,80%,50%,0.3) 0px, transparent 50%),
+                radial-gradient(at 80% 20%, hsla(280,80%,60%,0.3) 0px, transparent 50%),
+                radial-gradient(at 60% 60%, hsla(320,80%,70%,0.2) 0px, transparent 50%);
+            animation: mesh-animation 20s ease-in-out infinite;
+        }
+
+        @keyframes mesh-animation {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.2) rotate(5deg); }
+        }
+
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
         .container {
-            position: relative;
-            z-index: 1;
-            max-width: 650px;
-            width: 100%;
-            background: var(--light-card);
-            padding: 3rem 3.5rem;
-            border-radius: 20px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            animation: fadeIn 1s ease-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
         }
 
-        .main-icon {
-            font-size: 3.5rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-            text-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+        .content-card {
+            max-width: 520px;
+            width: 100%;
+            background: var(--surface-glass);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            animation: card-entrance 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes card-entrance {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .migration-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--surface-glass-strong);
+            border: 1px solid var(--border-glass);
+            padding: 0.5rem 1rem;
+            border-radius: 100px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .migration-badge i {
+            color: var(--warning-400);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
         h1 {
-            font-size: 2.75rem;
+            font-size: 2.5rem;
             font-weight: 700;
-            margin-bottom: 1rem;
-        }
-
-        .intro-text {
-            font-size: 1.1rem;
-            color: var(--text-light);
-            line-height: 1.7;
-            margin-bottom: 2rem;
-        }
-        
-        .warning-text {
-            display: block;
-            margin-top: 1rem;
-            font-weight: 600;
-            color: var(--warning-color);
-        }
-        
-        .new-address-container {
-            background: #f0f4f8;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .new-address-container p {
-            margin: 0 0 1rem 0;
-            font-weight: 600;
-        }
-
-        .button {
-            display: inline-block;
-            background: linear-gradient(45deg, var(--primary-color), #00A9FF);
-            color: #ffffff;
-            padding: 1rem 2.5rem;
-            font-size: 1.2rem;
-            font-weight: 600;
-            text-decoration: none;
-            border-radius: 50px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 5px 20px rgba(0, 123, 255, 0.3);
-        }
-
-        .button:hover {
-            transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.5);
-        }
-
-        .redirect-timer {
-            margin-top: 2.5rem;
-            padding-top: 2rem;
-            border-top: 1px solid #e0e0e0;
-        }
-
-        #countdown-text {
-            color: var(--text-light);
+            line-height: 1.1;
             margin-bottom: 0.75rem;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .progress-bar {
-            width: 100%;
-            height: 10px;
-            background-color: #e9ecef;
-            border-radius: 5px;
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+            font-weight: 400;
+        }
+
+        .timeline {
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: var(--surface-glass);
+            border-radius: 12px;
+            border: 1px solid var(--border-glass);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover {
+            background: var(--surface-glass-strong);
+            transform: translateX(4px);
+        }
+
+        .timeline-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.125rem;
+            flex-shrink: 0;
+        }
+
+        .timeline-icon.current {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--accent-400);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        .timeline-icon.next {
+            background: rgba(113, 113, 122, 0.2);
+            color: var(--text-tertiary);
+            border: 1px solid rgba(113, 113, 122, 0.3);
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .timeline-description {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .domain-transition {
+            background: var(--surface-glass-strong);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            position: relative;
             overflow: hidden;
         }
 
-        .progress-bar-inner {
-            height: 100%;
-            width: 0%;
-            background-color: var(--primary-color);
-            border-radius: 5px;
-            transition: width 1s linear;
+        .domain-transition::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-400), transparent);
+            animation: shimmer 2s infinite;
         }
-        
-        @media (max-width: 768px) {
-            body { padding: 1rem; }
-            .container { padding: 2rem; }
-            h1 { font-size: 2rem; }
-            .intro-text { font-size: 1rem; }
-            .button { padding: 0.8rem 2rem; font-size: 1rem; }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .domain-arrow {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .domain-from, .domain-to {
+            flex: 1;
+            padding: 0.75rem;
+            background: var(--surface-glass);
+            border-radius: 8px;
+            border: 1px solid var(--border-glass);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.875rem;
+        }
+
+        .domain-from {
+            color: var(--warning-400);
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .domain-to {
+            color: var(--success-400);
+            font-weight: 600;
+        }
+
+        .arrow-icon {
+            color: var(--accent-400);
+            font-size: 1.25rem;
+        }
+
+        .cta-container {
+            margin-top: 2rem;
+        }
+
+        .cta-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent-400) 0%, var(--accent-500) 100%);
+            color: white;
+            text-decoration: none;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        .expiry-notice {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .expiry-notice-text {
+            font-size: 0.875rem;
+            color: var(--warning-400);
+            font-weight: 500;
+        }
+
+        @media (max-width: 640px) {
+            .content-card {
+                padding: 2rem;
+                margin: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .domain-arrow {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .arrow-icon {
+                transform: rotate(90deg);
+            }
         }
     </style>
 </head>
 <body>
-
-    <div class="background-gradient"></div>
+    <div class="mesh-gradient"></div>
+    <div class="noise-overlay"></div>
 
     <div class="container">
-        
-        <i class="fas fa-hand-wave main-icon"></i>
-        
-        <h1>So Long, pillowtalk.top!</h1>
-        
-        <p class="intro-text">
-            We've had fun on this domain, but our journey must continue elsewhere. To keep up with us, please update your bookmarks to our new home.
-            <strong class="warning-text">
-                <i class="fas fa-exclamation-triangle"></i> This page and the pillowtalk.top domain will disappear permanently in February 2026.
-            </strong>
-        </p>
+        <div class="content-card">
+            <div class="header">
+                <div class="migration-badge">
+                    <i class="fas fa-exchange-alt"></i>
+                    Domain Migration
+                </div>
+                <h1>We're Relocating</h1>
+                <p class="subtitle">pillowtalk.top → longno.co.uk</p>
+            </div>
 
-        <div class="new-address-container">
-            <p>You can now find us at:</p>
-            <a href="https://www.longno.co.uk" class="button">
-                www.longno.co.uk
-            </a>
-        </div>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-icon current">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">Current Status</div>
+                        <div class="timeline-description">Migration notice active</div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-icon next">
+                        <i class="fas fa-calendar-times"></i>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">Domain Expiry</div>
+                        <div class="timeline-description">09/02/2026 - Permanent shutdown</div>
+                    </div>
+                </div>
+            </div>
 
-        <div class="redirect-timer">
-            <p id="countdown-text">You will be automatically redirected in 15 seconds...</p>
-            <div class="progress-bar">
-                <div id="progress-bar-inner" class="progress-bar-inner"></div>
+            <div class="domain-transition">
+                <div class="domain-arrow">
+                    <div class="domain-from">pillowtalk.top</div>
+                    <i class="fas fa-arrow-right arrow-icon"></i>
+                    <div class="domain-to">longno.co.uk</div>
+                </div>
+            </div>
+
+            <div class="cta-container">
+                <a href="https://www.longno.co.uk" class="cta-button">
+                    <i class="fas fa-external-link-alt"></i>
+                    Visit New Domain
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="expiry-notice">
+                <p class="expiry-notice-text">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    This domain will cease to exist after 09/02/2026
+                </p>
             </div>
         </div>
-
     </div>
 
     <script>
-        const NEW_DOMAIN_URL = "https://www.longno.co.uk";
-        const REDIRECT_SECONDS = 15;
-        const countdownText = document.getElementById('countdown-text');
-        const progressBarInner = document.getElementById('progress-bar-inner');    
-        let secondsLeft = REDIRECT_SECONDS;
-        function updateCountdown() {
-            countdownText.textContent = `You will be automatically redirected in ${secondsLeft} second${secondsLeft === 1 ? '' : 's'}...`;
-            const progressPercentage = ((REDIRECT_SECONDS - secondsLeft) / REDIRECT_SECONDS) * 100;
-            progressBarInner.style.width = `${progressPercentage}%`;
-            secondsLeft--;
-            if (secondsLeft < 0) {
-                clearInterval(countdownInterval);
-                countdownText.textContent = "Redirecting now...";
-                window.location.href = NEW_DOMAIN_URL;
-            }
-        }
-        updateCountdown(); 
-        const countdownInterval = setInterval(updateCountdown, 1000);
+        setTimeout(() => {
+            window.location.href = 'https://www.longno.co.uk';
+        }, 10000);
     </script>
 </body>
 </html>
