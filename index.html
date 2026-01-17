@@ -272,6 +272,78 @@
             font-size: 1.25rem;
         }
 
+        .countdown-container {
+            margin: 2rem 0;
+        }
+
+        .countdown-title {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .countdown-timer {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+        }
+
+        .countdown-unit {
+            background: var(--surface-glass-strong);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .countdown-unit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--warning-400), var(--warning-500));
+            animation: countdown-progress 1s infinite linear;
+        }
+
+        @keyframes countdown-progress {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .countdown-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--warning-400);
+            line-height: 1;
+            margin-bottom: 0.25rem;
+            font-variant-numeric: tabular-nums;
+            transition: all 0.3s ease;
+        }
+
+        .countdown-label {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .countdown-expiry {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-glass);
+        }
+
         .cta-container {
             margin-top: 2rem;
         }
@@ -292,6 +364,7 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            cursor: pointer;
         }
 
         .cta-button::before {
@@ -347,6 +420,10 @@
             .arrow-icon {
                 transform: rotate(90deg);
             }
+
+            .countdown-timer {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
@@ -394,6 +471,31 @@
                 </div>
             </div>
 
+            <div class="countdown-container">
+                <div class="countdown-title">Time Remaining</div>
+                <div class="countdown-timer">
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="days">00</div>
+                        <div class="countdown-label">Days</div>
+                    </div>
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="hours">00</div>
+                        <div class="countdown-label">Hours</div>
+                    </div>
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="minutes">00</div>
+                        <div class="countdown-label">Minutes</div>
+                    </div>
+                    <div class="countdown-unit">
+                        <div class="countdown-value" id="seconds">00</div>
+                        <div class="countdown-label">Seconds</div>
+                    </div>
+                </div>
+                <div class="countdown-expiry" id="countdown-expiry">
+                    Domain expires on: 09/02/2026
+                </div>
+            </div>
+
             <div class="cta-container">
                 <a href="https://www.longno.co.uk" class="cta-button">
                     <i class="fas fa-external-link-alt"></i>
@@ -412,9 +514,57 @@
     </div>
 
     <script>
-        setTimeout(() => {
-            window.location.href = 'https://www.longno.co.uk';
-        }, 10000);
+        const expiryDate = new Date('2026-02-09T23:59:59').getTime();
+        
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const timeLeft = expiryDate - now;    
+            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+            
+            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+            
+            const secondsElement = document.getElementById('seconds');
+            secondsElement.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                secondsElement.style.transform = 'scale(1)';
+            }, 200);
+            
+            const allValues = ['days', 'hours', 'minutes', 'seconds'];
+            allValues.forEach(id => {
+                const element = document.getElementById(id);
+                element.style.color = '#f59e0b';
+                setTimeout(() => {
+                    element.style.color = '#f59e0b';
+                }, 100);
+            });
+            
+            if (timeLeft < 0) {
+                clearInterval(countdownInterval);
+                document.getElementById('days').textContent = '00';
+                document.getElementById('hours').textContent = '00';
+                document.getElementById('minutes').textContent = '00';
+                document.getElementById('seconds').textContent = '00';
+                document.getElementById('countdown-expiry').textContent = 'Domain has expired!';
+                document.getElementById('countdown-expiry').style.color = '#ef4444';
+
+                const ctaButton = document.querySelector('.cta-button');
+                ctaButton.innerHTML = '<i class="fas fa-unlink"></i> Domain Expired <i class="fas fa-exclamation-circle"></i>';
+                ctaButton.style.background = 'linear-gradient(135deg, #71717a 0%, #52525b 100%)';
+                ctaButton.style.cursor = 'not-allowed';
+                ctaButton.onclick = (e) => { e.preventDefault();
+                    alert('This domain has expired. Please use longno.co.uk');
+                };
+            }
+        }
+        
+        const countdownInterval = setInterval(updateCountdown, 1000);
+        updateCountdown();
     </script>
 </body>
 </html>
