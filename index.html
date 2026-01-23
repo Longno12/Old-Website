@@ -6,9 +6,9 @@
     <title>Domain Migration | pillowtalk.top → longno.co.uk</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
+    
     <style>
         :root {
             --primary-900: #0a0a0b;
@@ -16,9 +16,11 @@
             --primary-700: #2c2c31;
             --accent-400: #6366f1;
             --accent-500: #8b5cf6;
+            --accent-600: #7c3aed;
             --success-400: #10b981;
             --warning-400: #f59e0b;
             --warning-500: #d97706;
+            --error-400: #ef4444;
             --surface-glass: rgba(255, 255, 255, 0.03);
             --surface-glass-strong: rgba(255, 255, 255, 0.08);
             --border-glass: rgba(255, 255, 255, 0.1);
@@ -40,6 +42,31 @@
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
+            cursor: none;
+        }
+
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: var(--accent-400);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transition: transform 0.1s ease;
+        }
+
+        .cursor-follower {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--accent-400);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transition: all 0.3s ease;
+            opacity: 0.5;
         }
 
         .mesh-gradient {
@@ -49,17 +76,55 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            opacity: 0.3;
+            opacity: 0.4;
             background:
-                radial-gradient(at 20% 80%, hsla(212,80%,50%,0.3) 0px, transparent 50%),
-                radial-gradient(at 80% 20%, hsla(280,80%,60%,0.3) 0px, transparent 50%),
-                radial-gradient(at 60% 60%, hsla(320,80%,70%,0.2) 0px, transparent 50%);
-            animation: mesh-animation 20s ease-in-out infinite;
+                radial-gradient(at 20% 80%, hsla(212, 80%, 50%, 0.4) 0px, transparent 50%),
+                radial-gradient(at 80% 20%, hsla(280, 80%, 60%, 0.4) 0px, transparent 50%),
+                radial-gradient(at 60% 60%, hsla(320, 80%, 70%, 0.3) 0px, transparent 50%);
+            animation: mesh-animation 25s ease-in-out infinite;
         }
 
         @keyframes mesh-animation {
             0%, 100% { transform: scale(1) rotate(0deg); }
-            50% { transform: scale(1.2) rotate(5deg); }
+            33% { transform: scale(1.3) rotate(120deg); }
+            66% { transform: scale(1.1) rotate(240deg); }
+        }
+
+        .particle-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--accent-400);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: float 6s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
         }
 
         .noise-overlay {
@@ -79,37 +144,46 @@
             align-items: center;
             justify-content: center;
             padding: 2rem;
+            perspective: 1000px;
         }
 
         .content-card {
-            max-width: 520px;
+            max-width: 560px;
             width: 100%;
             background: var(--surface-glass);
             backdrop-filter: blur(40px);
             -webkit-backdrop-filter: blur(40px);
             border: 1px solid var(--border-glass);
-            border-radius: 24px;
+            border-radius: 32px;
             padding: 3rem;
             box-shadow: 
                 0 25px 50px -12px rgba(0, 0, 0, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            animation: card-entrance 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+                inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                0 0 100px rgba(99, 102, 241, 0.1);
+            animation: card-entrance 1s cubic-bezier(0.16, 1, 0.3, 1);
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease;
+        }
+
+        .content-card:hover {
+            transform: rotateX(2deg) rotateY(-2deg) translateZ(20px);
         }
 
         @keyframes card-entrance {
             from {
                 opacity: 0;
-                transform: translateY(30px) scale(0.95);
+                transform: translateY(50px) rotateX(10deg) scale(0.9);
             }
             to {
                 opacity: 1;
-                transform: translateY(0) scale(1);
+                transform: translateY(0) rotateX(0) scale(1);
             }
         }
 
         .header {
             text-align: center;
             margin-bottom: 2.5rem;
+            position: relative;
         }
 
         .migration-badge {
@@ -118,12 +192,20 @@
             gap: 0.5rem;
             background: var(--surface-glass-strong);
             border: 1px solid var(--border-glass);
-            padding: 0.5rem 1rem;
+            padding: 0.75rem 1.5rem;
             border-radius: 100px;
             font-size: 0.875rem;
             font-weight: 500;
             color: var(--text-secondary);
             margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .migration-badge:hover {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: var(--warning-400);
+            transform: scale(1.05);
         }
 
         .migration-badge i {
@@ -132,80 +214,141 @@
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.1); }
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: 700;
             line-height: 1.1;
             margin-bottom: 0.75rem;
-            background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-400) 50%, var(--text-secondary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            animation: text-shimmer 3s ease-in-out infinite;
+            position: relative;
+        }
+
+        @keyframes text-shimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
         .subtitle {
             color: var(--text-secondary);
-            font-size: 1.125rem;
+            font-size: 1.25rem;
             font-weight: 400;
+            animation: fade-in-up 1s ease-out 0.3s both;
         }
 
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Enhanced Timeline */
         .timeline {
-            margin: 2rem 0;
+            margin: 2.5rem 0;
             position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--accent-400), transparent);
+            border-radius: 1px;
         }
 
         .timeline-item {
             display: flex;
             align-items: center;
             gap: 1rem;
-            margin-bottom: 1rem;
-            padding: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1.25rem;
             background: var(--surface-glass);
-            border-radius: 12px;
+            border-radius: 16px;
             border: 1px solid var(--border-glass);
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .timeline-item:hover::before {
+            left: 100%;
         }
 
         .timeline-item:hover {
             background: var(--surface-glass-strong);
-            transform: translateX(4px);
+            transform: translateX(8px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
         .timeline-icon {
-            width: 40px;
-            height: 40px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.125rem;
+            font-size: 1.25rem;
             flex-shrink: 0;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
         }
 
         .timeline-icon.current {
             background: rgba(99, 102, 241, 0.2);
             color: var(--accent-400);
-            border: 1px solid rgba(99, 102, 241, 0.3);
+            border: 2px solid rgba(99, 102, 241, 0.3);
+            animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
+            to { box-shadow: 0 0 30px rgba(99, 102, 241, 0.6); }
         }
 
         .timeline-icon.next {
             background: rgba(113, 113, 122, 0.2);
             color: var(--text-tertiary);
-            border: 1px solid rgba(113, 113, 122, 0.3);
+            border: 2px solid rgba(113, 113, 122, 0.3);
         }
 
         .timeline-content {
             flex: 1;
+            position: relative;
+            z-index: 1;
         }
 
         .timeline-title {
             font-weight: 600;
             color: var(--text-primary);
             margin-bottom: 0.25rem;
+            font-size: 1.1rem;
         }
 
         .timeline-description {
@@ -216,11 +359,17 @@
         .domain-transition {
             background: var(--surface-glass-strong);
             border: 1px solid var(--border-glass);
-            border-radius: 16px;
-            padding: 1.5rem;
-            margin: 2rem 0;
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2.5rem 0;
             position: relative;
             overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .domain-transition:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         }
 
         .domain-transition::before {
@@ -229,9 +378,9 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--accent-400), transparent);
-            animation: shimmer 2s infinite;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-400), var(--accent-500), transparent);
+            animation: shimmer 3s infinite;
         }
 
         @keyframes shimmer {
@@ -244,16 +393,20 @@
             align-items: center;
             gap: 1rem;
             margin-bottom: 1rem;
+            position: relative;
         }
 
         .domain-from, .domain-to {
             flex: 1;
-            padding: 0.75rem;
+            padding: 1rem;
             background: var(--surface-glass);
-            border-radius: 8px;
+            border-radius: 12px;
             border: 1px solid var(--border-glass);
             font-family: 'Space Mono', monospace;
             font-size: 0.875rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         .domain-from {
@@ -262,18 +415,46 @@
             opacity: 0.7;
         }
 
+        .domain-from::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--warning-400);
+            animation: strike-through 2s ease-in-out infinite;
+        }
+
+        @keyframes strike-through {
+            0%, 100% { transform: scaleX(0); }
+            50% { transform: scaleX(1); }
+        }
+
         .domain-to {
             color: var(--success-400);
             font-weight: 600;
+            animation: domain-glow 2s infinite alternate;
+        }
+
+        @keyframes domain-glow {
+            from { box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+            to { box-shadow: 0 0 30px rgba(16, 185, 129, 0.5); }
         }
 
         .arrow-icon {
             color: var(--accent-400);
-            font-size: 1.25rem;
+            font-size: 1.5rem;
+            animation: arrow-bounce 2s infinite;
+        }
+
+        @keyframes arrow-bounce {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(8px); }
         }
 
         .countdown-container {
-            margin: 2rem 0;
+            margin: 2.5rem 0;
         }
 
         .countdown-title {
@@ -283,23 +464,43 @@
             font-weight: 500;
             margin-bottom: 1rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            position: relative;
         }
+
+        .countdown-title::before,
+        .countdown-title::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--border-glass), transparent);
+        }
+
+        .countdown-title::before { left: 0; }
+        .countdown-title::after { right: 0; }
 
         .countdown-timer {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 0.75rem;
+            gap: 1rem;
         }
 
         .countdown-unit {
             background: var(--surface-glass-strong);
             border: 1px solid var(--border-glass);
-            border-radius: 12px;
-            padding: 1rem;
+            border-radius: 16px;
+            padding: 1.5rem 1rem;
             text-align: center;
             position: relative;
             overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .countdown-unit:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
         .countdown-unit::before {
@@ -308,8 +509,8 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--warning-400), var(--warning-500));
+            height: 3px;
+            background: linear-gradient(90deg, var(--warning-400), var(--warning-500), var(--warning-400));
             animation: countdown-progress 1s infinite linear;
         }
 
@@ -319,33 +520,37 @@
         }
 
         .countdown-value {
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: 700;
             color: var(--warning-400);
             line-height: 1;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.5rem;
             font-variant-numeric: tabular-nums;
             transition: all 0.3s ease;
+            font-family: 'Space Mono', monospace;
         }
 
         .countdown-label {
             font-size: 0.75rem;
             color: var(--text-tertiary);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
+            font-weight: 500;
         }
 
         .countdown-expiry {
             text-align: center;
             color: var(--text-secondary);
             font-size: 0.875rem;
-            margin-top: 1rem;
-            padding-top: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
             border-top: 1px solid var(--border-glass);
+            font-family: 'Space Mono', monospace;
         }
 
         .cta-container {
-            margin-top: 2rem;
+            margin-top: 2.5rem;
+            position: relative;
         }
 
         .cta-button {
@@ -357,14 +562,16 @@
             background: linear-gradient(135deg, var(--accent-400) 0%, var(--accent-500) 100%);
             color: white;
             text-decoration: none;
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            border-radius: 16px;
             font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             overflow: hidden;
             cursor: pointer;
+            border: none;
+            outline: none;
         }
 
         .cta-button::before {
@@ -374,8 +581,8 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s ease;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
         }
 
         .cta-button:hover::before {
@@ -383,33 +590,114 @@
         }
 
         .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 
+                0 15px 40px rgba(99, 102, 241, 0.4),
+                0 0 60px rgba(99, 102, 241, 0.2);
+        }
+
+        .cta-button:active {
+            transform: translateY(-1px) scale(1.01);
+        }
+
+        .cta-button i {
+            transition: transform 0.3s ease;
+        }
+
+        .cta-button:hover i:last-child {
+            transform: translateX(4px);
         }
 
         .expiry-notice {
-            margin-top: 1.5rem;
-            padding: 1rem;
+            margin-top: 2rem;
+            padding: 1.25rem;
             background: rgba(245, 158, 11, 0.1);
             border: 1px solid rgba(245, 158, 11, 0.2);
-            border-radius: 8px;
+            border-radius: 12px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .expiry-notice:hover {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: var(--warning-400);
+            transform: translateY(-2px);
         }
 
         .expiry-notice-text {
             font-size: 0.875rem;
             color: var(--warning-400);
             font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
+        .expiry-notice i {
+            animation: warning-pulse 1.5s infinite;
+        }
+
+        @keyframes warning-pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+
+        .progress-container {
+            margin: 2rem 0;
+            background: var(--surface-glass);
+            border-radius: 100px;
+            height: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-400), var(--accent-500), var(--success-400));
+            border-radius: 100px;
+            transition: width 1s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: progress-shimmer 2s infinite;
+        }
+
+        @keyframes progress-shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .interactive-glow {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, var(--accent-400) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            filter: blur(40px);
         }
 
         @media (max-width: 640px) {
             .content-card {
                 padding: 2rem;
                 margin: 1rem;
+                border-radius: 24px;
             }
 
             h1 {
-                font-size: 2rem;
+                font-size: 2.5rem;
             }
 
             .domain-arrow {
@@ -423,12 +711,143 @@
 
             .countdown-timer {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
             }
+
+            .countdown-value {
+                font-size: 2rem;
+            }
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-900);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid var(--surface-glass);
+            border-top: 3px solid var(--accent-400);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .glitch {
+            position: relative;
+            animation: glitch-skew 1s infinite linear alternate-reverse;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            animation: glitch-anim 2s infinite linear alternate-reverse;
+            color: var(--accent-400);
+            z-index: -1;
+        }
+
+        .glitch::after {
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+            color: var(--warning-400);
+            z-index: -2;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(42px, 9999px, 44px, 0); transform: skew(0.5deg); }
+            5% { clip: rect(12px, 9999px, 59px, 0); transform: skew(0.2deg); }
+            10% { clip: rect(48px, 9999px, 29px, 0); transform: skew(0.8deg); }
+            15% { clip: rect(42px, 9999px, 73px, 0); transform: skew(0.3deg); }
+            20% { clip: rect(63px, 9999px, 27px, 0); transform: skew(0.1deg); }
+            25% { clip: rect(34px, 9999px, 64px, 0); transform: skew(0.9deg); }
+            30% { clip: rect(86px, 9999px, 73px, 0); transform: skew(0.5deg); }
+            35% { clip: rect(20px, 9999px, 20px, 0); transform: skew(0.2deg); }
+            40% { clip: rect(26px, 9999px, 60px, 0); transform: skew(0.7deg); }
+            45% { clip: rect(25px, 9999px, 66px, 0); transform: skew(0.3deg); }
+            50% { clip: rect(57px, 9999px, 98px, 0); transform: skew(0.6deg); }
+            55% { clip: rect(5px, 9999px, 46px, 0); transform: skew(0.8deg); }
+            60% { clip: rect(82px, 9999px, 31px, 0); transform: skew(0.4deg); }
+            65% { clip: rect(54px, 9999px, 27px, 0); transform: skew(0.1deg); }
+            70% { clip: rect(28px, 9999px, 99px, 0); transform: skew(0.7deg); }
+            75% { clip: rect(45px, 9999px, 69px, 0); transform: skew(0.2deg); }
+            80% { clip: rect(23px, 9999px, 85px, 0); transform: skew(0.9deg); }
+            85% { clip: rect(54px, 9999px, 84px, 0); transform: skew(0.5deg); }
+            90% { clip: rect(45px, 9999px, 47px, 0); transform: skew(0.3deg); }
+            95% { clip: rect(37px, 9999px, 20px, 0); transform: skew(0.6deg); }
+            100% { clip: rect(4px, 9999px, 91px, 0); transform: skew(0.8deg); }
+        }
+
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(65px, 9999px, 119px, 0); transform: skew(0.1deg); }
+            5% { clip: rect(52px, 9999px, 74px, 0); transform: skew(0.7deg); }
+            10% { clip: rect(79px, 9999px, 85px, 0); transform: skew(0.3deg); }
+            15% { clip: rect(75px, 9999px, 5px, 0); transform: skew(0.9deg); }
+            20% { clip: rect(20px, 9999px, 73px, 0); transform: skew(0.4deg); }
+            25% { clip: rect(50px, 9999px, 87px, 0); transform: skew(0.8deg); }
+            30% { clip: rect(9px, 9999px, 99px, 0); transform: skew(0.2deg); }
+            35% { clip: rect(62px, 9999px, 11px, 0); transform: skew(0.6deg); }
+            40% { clip: rect(76px, 9999px, 66px, 0); transform: skew(0.1deg); }
+            45% { clip: rect(32px, 9999px, 93px, 0); transform: skew(0.7deg); }
+            50% { clip: rect(19px, 9999px, 43px, 0); transform: skew(0.3deg); }
+            55% { clip: rect(88px, 9999px, 98px, 0); transform: skew(0.9deg); }
+            60% { clip: rect(17px, 9999px, 39px, 0); transform: skew(0.5deg); }
+            65% { clip: rect(59px, 9999px, 17px, 0); transform: skew(0.2deg); }
+            70% { clip: rect(3px, 9999px, 51px, 0); transform: skew(0.8deg); }
+            75% { clip: rect(94px, 9999px, 2px, 0); transform: skew(0.4deg); }
+            80% { clip: rect(24px, 9999px, 89px, 0); transform: skew(0.1deg); }
+            85% { clip: rect(53px, 9999px, 44px, 0); transform: skew(0.7deg); }
+            90% { clip: rect(61px, 9999px, 67px, 0); transform: skew(0.3deg); }
+            95% { clip: rect(2px, 9999px, 79px, 0); transform: skew(0.9deg); }
+            100% { clip: rect(87px, 9999px, 29px, 0); transform: skew(0.5deg); }
+        }
+
+        @keyframes glitch-skew {
+            0% { transform: skew(0deg); }
+            10% { transform: skew(-2deg); }
+            20% { transform: skew(0deg); }
+            30% { transform: skew(1deg); }
+            40% { transform: skew(0deg); }
+            50% { transform: skew(-1deg); }
+            60% { transform: skew(0deg); }
+            70% { transform: skew(2deg); }
+            80% { transform: skew(0deg); }
+            90% { transform: skew(-1deg); }
+            100% { transform: skew(0deg); }
         }
     </style>
 </head>
 <body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-follower" id="cursorFollower"></div>
+    <div class="interactive-glow" id="interactiveGlow"></div>
+
     <div class="mesh-gradient"></div>
+    <div class="particle-container" id="particleContainer"></div>
     <div class="noise-overlay"></div>
 
     <div class="container">
@@ -438,8 +857,12 @@
                     <i class="fas fa-exchange-alt"></i>
                     Domain Migration
                 </div>
-                <h1>We're Relocating</h1>
+                <h1 class="glitch" data-text="We're Relocating">We're Relocating</h1>
                 <p class="subtitle">pillowtalk.top → longno.co.uk</p>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar" style="width: 0%"></div>
             </div>
 
             <div class="timeline">
@@ -497,7 +920,7 @@
             </div>
 
             <div class="cta-container">
-                <a href="https://www.longno.co.uk" class="cta-button">
+                <a href="https://www.longno.co.uk" class="cta-button" id="ctaButton">
                     <i class="fas fa-external-link-alt"></i>
                     Visit New Domain
                     <i class="fas fa-arrow-right"></i>
@@ -514,35 +937,99 @@
     </div>
 
     <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loadingOverlay').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('loadingOverlay').style.display = 'none';
+                }, 500);
+            }, 1000);
+        });
+
+        const cursor = document.getElementById('cursor');
+        const cursorFollower = document.getElementById('cursorFollower');
+        const interactiveGlow = document.getElementById('interactiveGlow');
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX - 10 + 'px';
+            cursor.style.top = e.clientY - 10 + 'px';
+            
+            setTimeout(() => {
+                cursorFollower.style.left = e.clientX - 20 + 'px';
+                cursorFollower.style.top = e.clientY - 20 + 'px';
+            }, 100);
+
+            interactiveGlow.style.left = e.clientX - 100 + 'px';
+            interactiveGlow.style.top = e.clientY - 100 + 'px';
+        });
+
+        document.addEventListener('mouseenter', () => {
+            cursor.style.opacity = '1';
+            cursorFollower.style.opacity = '1';
+        });
+
+        document.addEventListener('mouseleave', () => {
+            cursor.style.opacity = '0';
+            cursorFollower.style.opacity = '0';
+        });
+
+        document.querySelectorAll('.timeline-item, .domain-transition, .countdown-unit, .cta-button, .expiry-notice').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                interactiveGlow.style.opacity = '0.3';
+                cursor.style.transform = 'scale(1.5)';
+                cursorFollower.style.transform = 'scale(1.2)';
+            });
+            
+            el.addEventListener('mouseleave', () => {
+                interactiveGlow.style.opacity = '0';
+                cursor.style.transform = 'scale(1)';
+                cursorFollower.style.transform = 'scale(1)';
+            });
+        });
+
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 6 + 's';
+            particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            document.getElementById('particleContainer').appendChild(particle);
+
+            setTimeout(() => {
+                particle.remove();
+            }, 6000);
+        }
+
+        setInterval(createParticle, 500);
+
         const expiryDate = new Date('2026-02-09T23:59:59').getTime();
-        
+        const startDate = new Date().getTime();
+        const totalDuration = expiryDate - startDate;
+
         function updateCountdown() {
             const now = new Date().getTime();
-            const timeLeft = expiryDate - now;    
+            const timeLeft = expiryDate - now;
+            const progress = ((totalDuration - timeLeft) / totalDuration) * 100;
+            
+            document.getElementById('progressBar').style.width = progress + '%';
+            
             const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
             const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
             
-            document.getElementById('days').textContent = days.toString().padStart(2, '0');
-            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
-            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
-            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+            animateValue('days', parseInt(document.getElementById('days').textContent), days, 500);
+            animateValue('hours', parseInt(document.getElementById('hours').textContent), hours, 500);
+            animateValue('minutes', parseInt(document.getElementById('minutes').textContent), minutes, 500);
+            animateValue('seconds', parseInt(document.getElementById('seconds').textContent), seconds, 500);
             
             const secondsElement = document.getElementById('seconds');
-            secondsElement.style.transform = 'scale(1.1)';
+            secondsElement.style.transform = 'scale(1.2)';
+            secondsElement.style.color = '#fbbf24';
             setTimeout(() => {
                 secondsElement.style.transform = 'scale(1)';
+                secondsElement.style.color = '#f59e0b';
             }, 200);
-            
-            const allValues = ['days', 'hours', 'minutes', 'seconds'];
-            allValues.forEach(id => {
-                const element = document.getElementById(id);
-                element.style.color = '#f59e0b';
-                setTimeout(() => {
-                    element.style.color = '#f59e0b';
-                }, 100);
-            });
             
             if (timeLeft < 0) {
                 clearInterval(countdownInterval);
@@ -553,18 +1040,95 @@
                 document.getElementById('countdown-expiry').textContent = 'Domain has expired!';
                 document.getElementById('countdown-expiry').style.color = '#ef4444';
 
-                const ctaButton = document.querySelector('.cta-button');
+                const ctaButton = document.getElementById('ctaButton');
                 ctaButton.innerHTML = '<i class="fas fa-unlink"></i> Domain Expired <i class="fas fa-exclamation-circle"></i>';
                 ctaButton.style.background = 'linear-gradient(135deg, #71717a 0%, #52525b 100%)';
                 ctaButton.style.cursor = 'not-allowed';
-                ctaButton.onclick = (e) => { e.preventDefault();
+                ctaButton.onclick = (e) => { 
+                    e.preventDefault();
                     alert('This domain has expired. Please use longno.co.uk');
                 };
             }
         }
-        
+
+        function animateValue(id, start, end, duration) {
+            const element = document.getElementById(id);
+            const range = end - start;
+            const increment = range / (duration / 16);
+            let current = start;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                    current = end;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.floor(current).toString().padStart(2, '0');
+            }, 16);
+        }
+
         const countdownInterval = setInterval(updateCountdown, 1000);
         updateCountdown();
+
+        document.querySelectorAll('.cta-button, .timeline-item, .countdown-unit').forEach(el => {
+            el.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    background: rgba(255, 255, 255, 0.3);
+                    border-radius: 50%;
+                    transform: scale(0);
+                    animation: ripple 0.6s linear;
+                    pointer-events: none;
+                `;
+                
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(ripple);
+                
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 2;
+            const y = (e.clientY / window.innerHeight - 0.5) * 2;
+            
+            document.querySelector('.mesh-gradient').style.transform = 
+                `translate(${x * 20}px, ${y * 20}px) scale(1.1)`;
+            
+            document.querySelectorAll('.timeline-item').forEach((item, index) => {
+                const speed = (index + 1) * 0.5;
+                item.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+            });
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                document.getElementById('ctaButton').click();
+            }
+        });
+
     </script>
 </body>
 </html>
